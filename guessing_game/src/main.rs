@@ -4,24 +4,33 @@ use std::io;
 
 fn main() {
     println!("Welcome To Guessing Game!!!");
-    println!("Guess the Number ");
 
     let secret_number = rand::thread_rng().gen_range(1..=100);
-    println!("The secret_number is {secret_number}");
-    let mut guess = String::new();
-    // mut is to make this var mutable
+    loop {
+        println!("Guess the Number ");
 
-    io::stdin()
-        .read_line(&mut guess)
-        .expect("Failed To Read line");
+        let mut guess = String::new();
+        // mut is to make this var mutable
 
-    let guess: u32 = guess.trim().parse().expect("Please Type a number");
+        io::stdin()
+            .read_line(&mut guess)
+            .expect("Failed To Read line");
 
-    println!("You gussed {guess}");
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num, 
+            Err(_) => continue 
+            // underscore is a catchall keyword, in this case we dont care for what the ERROR object has in it
+        };
 
-    match guess.cmp(&secret_number) {
-        Ordering::Less => print!("Too Small"),
-        Ordering::Greater => print!("Too Large"),
-        Ordering::Equal => print!("You Win!!!"),
+        println!("You gussed {guess}");
+
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too Small"),
+            Ordering::Greater => println!("Too Large"),
+            Ordering::Equal => {
+                println!("You Win!!!");
+                break;
+            }
+        }
     }
 }
